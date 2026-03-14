@@ -10,7 +10,12 @@ return {
     config = function()
         local harpoon = require("harpoon")
 
-        harpoon:setup()
+        harpoon:setup({
+            settings = {
+                save_on_toggle = true,
+                sync_on_ui_close = true,
+            },
+        })
 
         -- keymaps
         vim.keymap.set("n", "<leader>a", function()
@@ -27,6 +32,7 @@ return {
         vim.keymap.set("n", "<leader>2", function() harpoon:list():select(2) end, { desc = '[2] harpoon file' })
         vim.keymap.set("n", "<leader>3", function() harpoon:list():select(3) end, { desc = '[3] harpoon file' })
         vim.keymap.set("n", "<leader>4", function() harpoon:list():select(4) end, { desc = '[4] harpoon file' })
+        vim.keymap.set("n", "<leader>5", function() harpoon:list():select(4) end, { desc = '[5] harpoon file' })
         vim.keymap.set("n", "<leader>n", function() harpoon:list():next() end, { desc = '[N]ext harpoon file' })
         vim.keymap.set("n", "<leader>p", function() harpoon:list():prev() end, { desc = '[P]revious harpoon file' })
 
