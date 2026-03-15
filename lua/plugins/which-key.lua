@@ -20,7 +20,8 @@ return {
             { '<leader>t', group = '[T]oggle' },
             { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } }, -- Enable gitsigns recommended keymaps first
             { '<leader>c', group = '[C]argo', mode = { 'n' } },
-            { 'gr', group = 'LSP Actions', mode = { 'n' } },
+            { 'g', group = '[G]oto' },
+            { 'gr', group = '[G]oto [R]eferences/LSP', mode = { 'n' } },
         },
     },
 }
