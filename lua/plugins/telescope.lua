@@ -77,6 +77,7 @@ return {
     vim.keymap.set('n', '<leader>sh', builtin.help_tags, { desc = '[S]earch [H]elp' })
     vim.keymap.set('n', '<leader>sk', builtin.keymaps, { desc = '[S]earch [K]eymaps' })
     vim.keymap.set('n', '<leader>sf', builtin.find_files, { desc = '[S]earch [F]iles' })
+    vim.keymap.set('n', '<leader>sf', builtin.git_files, { desc = '[S]earch Git[F]iles' })
     vim.keymap.set('n', '<leader>ss', builtin.builtin, { desc = '[S]earch [S]elect Telescope' })
     vim.keymap.set({ 'n', 'v' }, '<leader>sw', builtin.grep_string, { desc = '[S]earch current [W]ord' })
     vim.keymap.set('n', '<leader>sg', builtin.live_grep, { desc = '[S]earch by [G]rep' })
@@ -86,6 +87,8 @@ return {
     vim.keymap.set('n', '<leader>sc', builtin.commands, { desc = '[S]earch [C]ommands' })
     vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
     vim.keymap.set('n', '<leader>fh', function() require('telescope').extensions.harpoon.marks() end, { desc = '[F]ind [H]arpoon' })
+
+    vim.keymap.set('n', '<leader>ps', function() builtin.grep_string { search = vim.fn.input 'Grep > ' } end, { desc = '[P]roject [S]earch by [G]rep' })
 
     -- This runs on LSP attach per buffer (see main LSP attach function in 'neovim/nvim-lspconfig' config for more info,
     -- it is better explained there). This allows easily switching between pickers if you prefer using something else!
@@ -161,4 +164,3 @@ return {
     vim.keymap.set('n', '<leader>sn', function() builtin.find_files { cwd = vim.fn.stdpath 'config' } end, { desc = '[S]earch [N]eovim files' })
   end,
 }
-

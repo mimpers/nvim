@@ -39,3 +39,21 @@ vim.keymap.set('n', '_', 'O<Esc>p', { desc = 'New line and paste below' })
 -- vim.keymap.set("n", "<C-S-l>", "<C-w>L", { desc = "Move window to the right" })
 -- vim.keymap.set("n", "<C-S-j>", "<C-w>J", { desc = "Move window to the lower" })
 -- vim.keymap.set("n", "<C-S-k>", "<C-w>K", { desc = "Move window to the upper" })
+
+-- Move lines/block up and down
+vim.keymap.set('v', 'J', ":m '>+1<CR>:silent! normal! gv=gv<CR>", { silent = true })
+vim.keymap.set('v', 'K', ":m '<-2<CR>:silent! normal! gv=gv<CR>", { silent = true })
+
+-- Keep cursor in place when joining lines
+vim.keymap.set('n', 'J', 'mzJ`z')
+
+-- Page scrolling keeps cursor in middle of screen
+vim.keymap.set('n', '<C-d>', 'C-d>zz')
+vim.keymap.set('n', '<C-u>', 'C-u>zz')
+vim.keymap.set('n', 'n', 'nzzzv')
+vim.keymap.set('n', 'N', 'Nzzzv')
+
+-- Don't replace buffer on paste
+vim.keymap.set('x', '<leader>p', '"_dP')
+vim.keymap.set('n', '<leader>d', '"_d')
+vim.keymap.set('v', '<leader>d', '"_d')

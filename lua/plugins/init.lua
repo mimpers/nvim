@@ -16,4 +16,5 @@ return {
   require 'plugins.toggleterm', -- terminal
   require 'plugins.autopairs',
   require 'plugins.indent-blankline',
+  require 'plugins.undotree',
 }
