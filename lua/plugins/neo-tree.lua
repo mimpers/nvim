@@ -10,23 +10,8 @@ return {
         'MunifTanjim/nui.nvim',
     },
     lazy = false,
-    keys = {
-        {
-            '\\',
-            function()
-                -- get Git root if it exists, fallback to cwd
-                local git_root = vim.fn.systemlist('git rev-parse --show-toplevel')[1]
-                local dir = vim.fn.isdirectory(git_root) == 1 and git_root or vim.loop.cwd()
-                require('neo-tree.command').execute({
-                    toggle = true,
-                    dir = dir,
-                    reveal = true,  -- keeps current file selected
-                })
-            end,
-            desc = 'Toggle NeoTree at Git root',
-            silent = true,
-        },
-    },
+    keys = require('config.keymaps').setup_neotree(),
+
     ---@module 'neo-tree'
     ---@type neotree.Config
     opts = {
