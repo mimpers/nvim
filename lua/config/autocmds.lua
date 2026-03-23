@@ -14,3 +14,7 @@ vim.api.nvim_create_autocmd('BufReadPost', {
     if row > 1 then vim.api.nvim_win_set_cursor(0, { row, col }) end
   end,
 })
+
+vim.api.nvim_create_autocmd('VimEnter', {
+  callback = function() require('harpoon'):list() end,
+})
