@@ -86,3 +86,5 @@ opt.confirm = true
 opt.viminfo = "'1000,f1"
 
 opt.undofile = true
+
+vim.opt.termguicolors = true

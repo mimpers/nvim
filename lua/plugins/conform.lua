@@ -3,13 +3,11 @@ return {
     {
         'stevearc/conform.nvim',
         event = { 'BufWritePre' }, -- Trigger on buffer write
-        cmd = { 'ConformInfo' },   -- Optional command to show Conform info
+        cmd = { 'ConformInfo' }, -- Optional command to show Conform info
         keys = {
             {
                 '<leader>f',
-                function()
-                    require('conform').format { async = true, lsp_format = 'fallback' }
-                end,
+                function() require('conform').format { async = true, lsp_format = 'fallback' } end,
                 mode = '', -- Apply in all modes by default
                 desc = '[F]ormat buffer',
             },

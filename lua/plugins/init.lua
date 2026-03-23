@@ -17,4 +17,5 @@ return {
   require 'plugins.autopairs',
   require 'plugins.indent-blankline',
   require 'plugins.undotree',
+  require 'plugins.editorconfig',
 }
