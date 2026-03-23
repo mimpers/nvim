@@ -48,8 +48,8 @@ vim.keymap.set('v', 'K', ":m '<-2<CR>:silent! normal! gv=gv<CR>", { silent = tru
 vim.keymap.set('n', 'J', 'mzJ`z')
 
 -- Page scrolling keeps cursor in middle of screen
-vim.keymap.set('n', '<C-d>', 'C-d>zz')
-vim.keymap.set('n', '<C-u>', 'C-u>zz')
+vim.keymap.set('n', '<C-d>', '<C-d>zz')
+vim.keymap.set('n', '<C-u>', '<C-u>zz')
 vim.keymap.set('n', 'n', 'nzzzv')
 vim.keymap.set('n', 'N', 'Nzzzv')
 
