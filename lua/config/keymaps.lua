@@ -44,6 +44,10 @@ vim.keymap.set('x', '<leader>p', '"_dP', { desc = '[P]aste' })
 vim.keymap.set('n', '<leader>d', '"_d', { desc = '[D]elete' })
 vim.keymap.set('v', '<leader>d', '"_d', { desc = '[D]elete' })
 
+-- Convenient visual mode indenting
+vim.keymap.set('v', '<Tab>', '>gv', { desc = 'Indent selection right' })
+vim.keymap.set('v', '<S-Tab>', '<gv', { desc = 'Indent selection left' })
+
 -- [[ Plugin Keymaps ]]
 --     add to plugin file: require('config.keymaps').setup_()
 
@@ -268,9 +272,19 @@ M.setup_toggleterm = function(Terminal)
     vim.keymap.set('n', '<leader>cr', '<cmd>lua _CARGO_RUN_TOGGLE()<CR>', { desc = 'Cargo Run' })
     vim.keymap.set('n', '<leader>cb', '<cmd>lua _CARGO_BUILD_TOGGLE()<CR>', { desc = 'Cargo Build' })
 
-    -- Convenient visual mode indenting
-    vim.keymap.set('v', '<Tab>', '>gv', { desc = 'Indent selection right' })
-    vim.keymap.set('v', '<S-Tab>', '<gv', { desc = 'Indent selection left' })
+    local float_term = Terminal:new {
+        direction = 'float',
+        float_opts = {
+            border = 'curved',
+        },
+        hidden = true,
+    }
+
+    -- Global function so our keymap can find it
+    function _TOGGLE_FLOATING_TERM() float_term:toggle() end
+
+    -- New bind for your general floating terminal
+    vim.keymap.set('n', '<leader>tf', '<cmd>lua _TOGGLE_FLOATING_TERM()<CR>', { desc = '[T]erminal [F]loat' })
 end
 
 M.setup_undotree = function()

@@ -19,6 +19,6 @@ return {
         -- [[ Custom floating terminals ]]
         -- We can define multiple terminal presets for common commands
         local Terminal = require('toggleterm.terminal').Terminal
-        require('config.keymaps').setup_neotree(Terminal)
+        require('config.keymaps').setup_toggleterm(Terminal)
     end,
 }
