@@ -1,4 +1,4 @@
-  -- Highlight todo, notes, etc in comments
+-- Highlight todo, notes, etc in comments
 return {
     'folke/todo-comments.nvim',
     event = 'VimEnter',
@@ -8,3 +8,4 @@ return {
     ---@diagnostic disable-next-line: missing-fields
     opts = { signs = false },
 }
+

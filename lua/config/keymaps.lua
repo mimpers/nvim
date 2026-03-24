@@ -24,7 +24,7 @@ vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower win
 vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
 
 vim.keymap.set('n', '-', 'o<Esc>p', { desc = 'New line and paste below' })
-vim.keymap.set('n', '_', 'O<Esc>p', { desc = 'New line and paste below' })
+vim.keymap.set('n', '_', 'O<Esc>p', { desc = 'New line and paste above' })
 
 -- Move lines/block up and down
 vim.keymap.set('v', 'J', ":m '>+1<CR>:silent! normal! gv=gv<CR>", { silent = true })
@@ -40,9 +40,9 @@ vim.keymap.set('n', 'n', 'nzzzv')
 vim.keymap.set('n', 'N', 'Nzzzv')
 
 -- Don't replace buffer on paste
-vim.keymap.set('x', '<leader>p', '"_dP')
-vim.keymap.set('n', '<leader>d', '"_d')
-vim.keymap.set('v', '<leader>d', '"_d')
+vim.keymap.set('x', '<leader>p', '"_dP', { desc = '[P]aste' })
+vim.keymap.set('n', '<leader>d', '"_d', { desc = '[D]elete' })
+vim.keymap.set('v', '<leader>d', '"_d', { desc = '[D]elete' })
 
 -- [[ Plugin Keymaps ]]
 --     add to plugin file: require('config.keymaps').setup_()
@@ -51,14 +51,16 @@ local M = {}
 
 M.setup_conform = function()
     return {
-        '<leader>f',
-        function() require('conform').format { async = true, lsp_format = 'fallback' } end,
-        mode = '', -- Apply in all modes by default
-        desc = '[F]ormat buffer',
+        {
+            '<leader>f',
+            function() require('conform').format { async = true, lsp_format = 'fallback' } end,
+            mode = 'n',
+            desc = '[F]ormat buffer',
+        },
     }
 end
 
-M.setup_gitsigns = function(gitsigns,bufnr)
+M.setup_gitsigns = function(gitsigns, bufnr)
     local function map(mode, l, r, opts)
         opts = opts or {}
         opts.buffer = bufnr
@@ -67,19 +69,19 @@ M.setup_gitsigns = function(gitsigns,bufnr)
 
     -- Navigation
     map('n', ']c', function()
-    if vim.wo.diff then
-        vim.cmd.normal { ']c', bang = true }
-    else
-        gitsigns.nav_hunk 'next'
-    end
+        if vim.wo.diff then
+            vim.cmd.normal { ']c', bang = true }
+        else
+            gitsigns.nav_hunk 'next'
+        end
     end, { desc = 'Jump to next git [c]hange' })
 
     map('n', '[c', function()
-    if vim.wo.diff then
-        vim.cmd.normal { '[c', bang = true }
-    else
-        gitsigns.nav_hunk 'prev'
-    end
+        if vim.wo.diff then
+            vim.cmd.normal { '[c', bang = true }
+        else
+            gitsigns.nav_hunk 'prev'
+        end
     end, { desc = 'Jump to previous git [c]hange' })
 
     -- Actions
@@ -103,50 +105,43 @@ end
 
 M.setup_harpoon = function(harpoon)
     -- keymaps
-    vim.keymap.set("n", "<leader>a", function()
-        harpoon:list():add()
-    end, { desc = "Harpoon add file" })
+    vim.keymap.set('n', '<leader>a', function() harpoon:list():add() end, { desc = 'Harpoon add file' })
 
     -- open harpoon menu
-    vim.keymap.set("n", "<leader>h", function()
-        harpoon.ui:toggle_quick_menu(harpoon:list())
-    end, { desc = "Harpoon menu" })
+    vim.keymap.set('n', '<leader>hh', function() harpoon.ui:toggle_quick_menu(harpoon:list()) end, { desc = 'Harpoon menu' })
 
     -- jump to files
-    vim.keymap.set("n", "<leader>1", function() harpoon:list():select(1) end, { desc = '[1] harpoon file' })
-    vim.keymap.set("n", "<leader>2", function() harpoon:list():select(2) end, { desc = '[2] harpoon file' })
-    vim.keymap.set("n", "<leader>3", function() harpoon:list():select(3) end, { desc = '[3] harpoon file' })
-    vim.keymap.set("n", "<leader>4", function() harpoon:list():select(4) end, { desc = '[4] harpoon file' })
-    vim.keymap.set("n", "<leader>5", function() harpoon:list():select(5) end, { desc = '[5] harpoon file' })
-    vim.keymap.set("n", "<leader>n", function() harpoon:list():next() end, { desc = '[N]ext harpoon file' })
-    vim.keymap.set("n", "<leader>p", function() harpoon:list():prev() end, { desc = '[P]revious harpoon file' })
+    vim.keymap.set('n', '<leader>1', function() harpoon:list():select(1) end, { desc = '[1] harpoon file' })
+    vim.keymap.set('n', '<leader>2', function() harpoon:list():select(2) end, { desc = '[2] harpoon file' })
+    vim.keymap.set('n', '<leader>3', function() harpoon:list():select(3) end, { desc = '[3] harpoon file' })
+    vim.keymap.set('n', '<leader>4', function() harpoon:list():select(4) end, { desc = '[4] harpoon file' })
+    vim.keymap.set('n', '<leader>5', function() harpoon:list():select(5) end, { desc = '[5] harpoon file' })
+    --vim.keymap.set('n', '<leader>hn', function() harpoon:list():next() end, { desc = '[N]ext harpoon file' })
+    --vim.keymap.set('n', '<leader>hp', function() harpoon:list():prev() end, { desc = '[P]revious harpoon file' })
 
     -- telescope integration
-    vim.keymap.set("n", "<leader>fh", function()
-        require("telescope").extensions.harpoon.marks()
-    end, { desc = "Telescope Harpoon" })
+    vim.keymap.set('n', '<leader>fh', function() require('telescope').extensions.harpoon.marks() end, { desc = 'Telescope Harpoon' })
 end
 
 M.setup_lsp = function(event)
-    local map = function(keys, func, desc, mode)
-        mode = mode or 'n'
+    local map = function(mode, keys, func, desc)
         vim.keymap.set(mode, keys, func, {
             buffer = event.buf,
-            desc = 'LSP: ' .. desc
+            desc = 'LSP: ' .. desc,
         })
     end
 
     -- Rename the variable under your cursor.
     --  Most Language Servers support renaming across files, etc.
-    map('grn', vim.lsp.buf.rename, '[R]e[n]ame')
+    map('n', 'grn', vim.lsp.buf.rename, '[R]e[n]ame')
 
     -- Execute a code action, usually your cursor needs to be on top of an error
     -- or a suggestion from your LSP for this to activate.
-    map('gra', vim.lsp.buf.code_action, '[G]oto Code [A]ction', {'n', 'x'})
+    map({ 'n', 'x' }, 'gra', vim.lsp.buf.code_action, '[G]oto Code [A]ction')
 
     -- WARN: This is not Goto Definition, this is Goto Declaration.
     --  For example, in C this would take you to the header.
-    map('grD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
+    map('n', 'grD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
 end
 
 M.setup_neotree = function()
@@ -157,15 +152,15 @@ M.setup_neotree = function()
                 -- get Git root if it exists, fallback to cwd
                 local git_root = vim.fn.systemlist('git rev-parse --show-toplevel')[1]
                 local dir = vim.fn.isdirectory(git_root) == 1 and git_root or vim.loop.cwd()
-                require('neo-tree.command').execute({
+                require('neo-tree.command').execute {
                     toggle = true,
                     dir = dir,
-                    reveal = true,  -- keeps current file selected
-                })
+                    reveal = true, -- keeps current file selected
+                }
             end,
             desc = 'Toggle NeoTree at Git root',
             silent = true,
-        }
+        },
     }
 end
 
@@ -183,29 +178,29 @@ M.setup_telescope_builtin = function(builtin)
     vim.keymap.set('n', '<leader>sc', builtin.commands, { desc = '[S]earch [C]ommands' })
     vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
     vim.keymap.set('n', '<leader>fh', function() require('telescope').extensions.harpoon.marks() end, { desc = '[F]ind [H]arpoon' })
-    vim.keymap.set('n', '<leader>ps', function() builtin.grep_string { search = vim.fn.input 'Grep > ' } end, { desc = '[P]roject [S]earch by [G]rep' })
+    vim.keymap.set('n', '<leader>sp', function() builtin.grep_string { search = vim.fn.input 'Grep > ' } end, { desc = '[P]roject [S]earch by [G]rep' })
 
     -- Override default behavior and theme when searching
     vim.keymap.set('n', '<leader>/', function()
-      -- You can pass additional configuration to Telescope to change the theme, layout, etc.
-      builtin.current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
-        winblend = 10,
-        previewer = false,
-      })
+        -- You can pass additional configuration to Telescope to change the theme, layout, etc.
+        builtin.current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
+            winblend = 10,
+            previewer = false,
+        })
     end, { desc = '[/] Fuzzily search in current buffer' })
 
     -- It's also possible to pass additional configuration options.
     --  See `:help telescope.builtin.live_grep()` for information about particular keys
     vim.keymap.set(
-      'n',
-      '<leader>s/',
-      function()
-        builtin.live_grep {
-          grep_open_files = true,
-          prompt_title = 'Live Grep in Open Files',
-        }
-      end,
-      { desc = '[S]earch [/] in Open Files' }
+        'n',
+        '<leader>s/',
+        function()
+            builtin.live_grep {
+                grep_open_files = true,
+                prompt_title = 'Live Grep in Open Files',
+            }
+        end,
+        { desc = '[S]earch [/] in Open Files' }
     )
 
     -- Shortcut for searching your Neovim configuration files
@@ -284,14 +279,23 @@ M.setup_undotree = function()
     }
 end
 
+M.setup_neogit = function()
+    return {
+        { '<leader>ng', '<cmd>Neogit<cr>', desc = 'Open Neogit' },
+        { '<leader>nd', '<cmd>DiffviewOpen<cr>', desc = 'Open Diffview' },
+        { '<leader>nD', '<cmd>DiffviewClose<cr>', desc = 'Close Diffview' },
+    }
+end
+
 M.setup_whichkey = function()
     return {
         { '<leader>s', group = '[S]earch', mode = { 'n', 'v' } },
         { '<leader>t', group = '[T]oggle' },
-        { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } }, -- Enable gitsigns recommended keymaps first
+        { '<leader>h', group = 'Git [H]unk/[H]arpoon', mode = { 'n', 'v' } }, -- Enable gitsigns recommended keymaps first
         { '<leader>c', group = '[C]argo', mode = { 'n' } },
         { 'g', group = '[G]oto' },
         { 'gr', group = '[G]oto [R]eferences/LSP', mode = { 'n' } },
+        { 'n', group = '[N]eoGit', mode = { 'n' } },
     }
 end
 

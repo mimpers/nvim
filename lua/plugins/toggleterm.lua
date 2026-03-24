@@ -3,17 +3,17 @@ return {
     'akinsho/toggleterm.nvim',
     version = '*', -- Use the latest stable release
     config = function()
-        local toggleterm = require('toggleterm')
+        local toggleterm = require 'toggleterm'
 
         -- [[ Basic toggleterm setup ]]
         -- See `:help toggleterm.nvim`
         toggleterm.setup {
-            size = 15,                   -- Height of horizontal terminal
-            open_mapping = [[<c-\>]],    -- Ctrl+\ toggles the terminal
-            shading_factor = 2,          -- Darken the terminal background
-            direction = 'horizontal',    -- Default terminal orientation
-            close_on_exit = true,         -- Automatically close when command exits
-            start_in_insert = true,       -- Start terminal in insert mode
+            size = 15, -- Height of horizontal terminal
+            open_mapping = [[<c-\>]], -- Ctrl+\ toggles the terminal
+            shading_factor = 2, -- Darken the terminal background
+            direction = 'horizontal', -- Default terminal orientation
+            close_on_exit = true, -- Automatically close when command exits
+            start_in_insert = true, -- Start terminal in insert mode
         }
 
         -- [[ Custom floating terminals ]]
@@ -22,4 +22,3 @@ return {
         require('config.keymaps').setup_neotree(Terminal)
     end,
 }
-

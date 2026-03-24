@@ -2,11 +2,9 @@
 return {
     {
         'stevearc/conform.nvim',
-        event = { 'BufWritePre' }, -- Trigger on buffer write
+        --event = { 'BufWritePre' }, -- Trigger on buffer write
         cmd = { 'ConformInfo' }, -- Optional command to show Conform info
-        keys = {
-            require('config.keymaps').setup_conform(),
-        },
+        keys = require('config.keymaps').setup_conform(),
         ---@module 'conform'
         ---@type conform.setupOpts
         opts = {

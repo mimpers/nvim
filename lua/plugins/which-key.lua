@@ -5,7 +5,7 @@
 return {
     'folke/which-key.nvim',
     event = 'VimEnter',
-    dependencies = { 'lewis6991/gitsigns.nvim' },  -- ensures gitsigns loads first
+    dependencies = { 'lewis6991/gitsigns.nvim' }, -- ensures gitsigns loads first
     ---@module 'which-key'
     ---@type wk.Opts
     ---@diagnostic disable-next-line: missing-fields
@@ -15,6 +15,6 @@ return {
         icons = { mappings = vim.g.have_nerd_font },
 
         -- Document existing key chains
-        spec = require('config.keymaps').setup_whichkey()
+        spec = require('config.keymaps').setup_whichkey(),
     },
 }

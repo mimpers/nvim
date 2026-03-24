@@ -1,4 +1,4 @@
 return {
-  'editorconfig/editorconfig-vim',
-  event = { 'BufReadPre', 'BufNewFile' },
+    'editorconfig/editorconfig-vim',
+    event = { 'BufReadPre', 'BufNewFile' },
 }

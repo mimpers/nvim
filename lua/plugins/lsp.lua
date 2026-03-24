@@ -6,18 +6,20 @@ return {
         -- Automatically install LSPs and related tools to stdpath for Neovim
         -- Mason must be loaded before its dependents so we need to set it up here.
         -- NOTE: `opts = {}` is the same as calling `require('mason').setup({})`
-    {
-        'mason-org/mason.nvim',
-        ---@module 'mason.settings'
-        ---@type MasonSettings
-        ---@diagnostic disable-next-line: missing-fields
-        opts = {}
-    }, -- Maps LSP server names between nvim-lspconfig and Mason package names.
-    'mason-org/mason-lspconfig.nvim', 'WhoIsSethDaniel/mason-tool-installer.nvim', -- Useful status updates for LSP.
-    {
-        'j-hui/fidget.nvim',
-        opts = {}
-    }},
+        {
+            'mason-org/mason.nvim',
+            ---@module 'mason.settings'
+            ---@type MasonSettings
+            ---@diagnostic disable-next-line: missing-fields
+            opts = {},
+        }, -- Maps LSP server names between nvim-lspconfig and Mason package names.
+        'mason-org/mason-lspconfig.nvim',
+        'WhoIsSethDaniel/mason-tool-installer.nvim', -- Useful status updates for LSP.
+        {
+            'j-hui/fidget.nvim',
+            opts = {},
+        },
+    },
     config = function()
         -- Brief aside: **What is LSP?**
         --
@@ -50,10 +52,9 @@ return {
         --    function will be executed to configure the current buffer
         vim.api.nvim_create_autocmd('LspAttach', {
             group = vim.api.nvim_create_augroup('kickstart-lsp-attach', {
-                clear = true
+                clear = true,
             }),
             callback = function(event)
-
                 require('config.keymaps').setup_lsp(event)
 
                 -- The following two autocommands are used to highlight references of the
@@ -64,31 +65,31 @@ return {
                 local client = vim.lsp.get_client_by_id(event.data.client_id)
                 if client and client:supports_method('textDocument/documentHighlight', event.buf) then
                     local highlight_augroup = vim.api.nvim_create_augroup('kickstart-lsp-highlight', {
-                        clear = false
+                        clear = false,
                     })
-                    vim.api.nvim_create_autocmd({'CursorHold', 'CursorHoldI'}, {
+                    vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
                         buffer = event.buf,
                         group = highlight_augroup,
-                        callback = vim.lsp.buf.document_highlight
+                        callback = vim.lsp.buf.document_highlight,
                     })
 
-                    vim.api.nvim_create_autocmd({'CursorMoved', 'CursorMovedI'}, {
+                    vim.api.nvim_create_autocmd({ 'CursorMoved', 'CursorMovedI' }, {
                         buffer = event.buf,
                         group = highlight_augroup,
-                        callback = vim.lsp.buf.clear_references
+                        callback = vim.lsp.buf.clear_references,
                     })
 
                     vim.api.nvim_create_autocmd('LspDetach', {
                         group = vim.api.nvim_create_augroup('kickstart-lsp-detach', {
-                            clear = true
+                            clear = true,
                         }),
                         callback = function(event2)
                             vim.lsp.buf.clear_references()
                             vim.api.nvim_clear_autocmds {
                                 group = 'kickstart-lsp-highlight',
-                                buffer = event2.buf
+                                buffer = event2.buf,
                             }
-                        end
+                        end,
                     })
                 end
 
@@ -97,13 +98,14 @@ return {
                 --
                 -- This may be unwanted, since they displace some of your code
                 if client and client:supports_method('textDocument/inlayHint', event.buf) then
-                    vim.keymap.set('n', '<leader>th', function()
-                        vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled {
-                                bufnr = event.buf
-                        })
-                    end, { buffer = event.buf, desc = '[T]oggle Inlay [H]ints' })
+                    vim.keymap.set(
+                        'n',
+                        '<leader>th',
+                        function() vim.lsp.inlay_hint.enable(not (vim.lsp.inlay_hint.is_enabled { bufnr = event.buf })) end,
+                        { buffer = event.buf, desc = '[T]oggle Inlay [H]ints' }
+                    )
                 end
-            end
+            end,
         })
 
         -- Enable the following language servers
@@ -122,8 +124,7 @@ return {
                 on_init = function(client)
                     if client.workspace_folders then
                         local path = client.workspace_folders[1].name
-                        if path ~= vim.fn.stdpath 'config' and
-                            (vim.uv.fs_stat(path .. '/.luarc.json') or vim.uv.fs_stat(path .. '/.luarc.jsonc')) then
+                        if path ~= vim.fn.stdpath 'config' and (vim.uv.fs_stat(path .. '/.luarc.json') or vim.uv.fs_stat(path .. '/.luarc.jsonc')) then
                             return
                         end
                     end
@@ -131,21 +132,20 @@ return {
                     client.config.settings.Lua = vim.tbl_deep_extend('force', client.config.settings.Lua, {
                         runtime = {
                             version = 'LuaJIT',
-                            path = {'lua/?.lua', 'lua/?/init.lua'}
+                            path = { 'lua/?.lua', 'lua/?/init.lua' },
                         },
                         workspace = {
                             checkThirdParty = false,
                             -- NOTE: this is a lot slower and will cause issues when working on your own configuration.
                             --  See https://github.com/neovim/nvim-lspconfig/issues/3189
-                            library = vim.tbl_extend('force', vim.api.nvim_get_runtime_file('', true),
-                                {'${3rd}/luv/library', '${3rd}/busted/library'})
-                        }
+                            library = vim.tbl_extend('force', vim.api.nvim_get_runtime_file('', true), { '${3rd}/luv/library', '${3rd}/busted/library' }),
+                        },
                     })
                 end,
                 settings = {
-                    Lua = {}
-                }
-            }
+                    Lua = {},
+                },
+            },
         }
 
         -- Ensure the servers and tools above are installed
@@ -161,12 +161,12 @@ return {
         })
 
         require('mason-tool-installer').setup {
-            ensure_installed = ensure_installed
+            ensure_installed = ensure_installed,
         }
 
         for name, server in pairs(servers) do
             vim.lsp.config(name, server)
             vim.lsp.enable(name)
         end
-    end
+    end,
 }
