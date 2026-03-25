@@ -19,4 +19,7 @@ return {
     require 'plugins.undotree',
     require 'plugins.editorconfig',
     require 'plugins.neogit',
+    require 'plugins.rename',
+    require 'plugins.dap',
+    require 'plugins.rust',
 }

@@ -48,6 +48,8 @@ vim.keymap.set('v', '<leader>d', '"_d', { desc = '[D]elete' })
 vim.keymap.set('v', '<Tab>', '>gv', { desc = 'Indent selection right' })
 vim.keymap.set('v', '<S-Tab>', '<gv', { desc = 'Indent selection left' })
 
+vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Open floating diagnostic' })
+
 -- [[ Plugin Keymaps ]]
 --     add to plugin file: require('config.keymaps').setup_()
 
@@ -299,6 +301,17 @@ M.setup_neogit = function()
         { '<leader>nd', '<cmd>DiffviewOpen<cr>', desc = 'Open Diffview' },
         { '<leader>nD', '<cmd>DiffviewClose<cr>', desc = 'Close Diffview' },
     }
+end
+
+M.setup_rename = function()
+    vim.keymap.set('n', '<leader>rn', function() return ':IncRename ' .. vim.fn.expand '<cword>' end, { expr = true, desc = 'Incremental rename' })
+end
+
+M.setup_rust_lsp = function(bufnr)
+    vim.keymap.set('n', '<leader>db', require('dap').toggle_breakpoint, { buffer = bufnr, desc = 'Breakpoint' })
+    vim.keymap.set('n', '<leader>dc', require('dap').continue, { buffer = bufnr, desc = 'Debug Continue' })
+    vim.keymap.set('n', '<leader>dr', '<cmd>RustLsp run<cr>', { buffer = bufnr, desc = 'Run Rust' })
+    vim.keymap.set('n', '<leader>dd', '<cmd>RustLsp debug<cr>', { buffer = bufnr, desc = 'Debug Rust' })
 end
 
 M.setup_whichkey = function()
