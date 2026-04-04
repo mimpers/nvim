@@ -39,4 +39,14 @@ return {
             dap.listeners.before.event_exited['dapui_config'] = function() dapui.close() end
         end,
     },
+    {
+        'Weissle/persistent-breakpoints.nvim',
+        dependencies = { 'mfussenegger/nvim-dap' },
+        event = 'BufReadPost', -- 👈 important
+        config = function()
+            require('persistent-breakpoints').setup {
+                load_breakpoints_event = { 'BufReadPost' },
+            }
+        end,
+    },
 }

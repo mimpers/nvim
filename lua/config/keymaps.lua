@@ -308,10 +308,107 @@ M.setup_rename = function()
 end
 
 M.setup_rust_lsp = function(bufnr)
-    vim.keymap.set('n', '<leader>db', require('dap').toggle_breakpoint, { buffer = bufnr, desc = 'Breakpoint' })
-    vim.keymap.set('n', '<leader>dc', require('dap').continue, { buffer = bufnr, desc = 'Debug Continue' })
-    vim.keymap.set('n', '<leader>dr', '<cmd>RustLsp run<cr>', { buffer = bufnr, desc = 'Run Rust' })
-    vim.keymap.set('n', '<leader>dd', '<cmd>RustLsp debug<cr>', { buffer = bufnr, desc = 'Debug Rust' })
+    vim.keymap.set('n', '<leader>db', function()
+        local ok, pb = pcall(require, 'persistent-breakpoints.api')
+        if ok then
+            pb.toggle_breakpoint()
+        else
+            require('dap').toggle_breakpoint()
+        end
+    end, { buffer = bufnr, desc = 'Toggle Breakpoint' })
+
+    vim.keymap.set('n', '<leader>dc', require('dap').continue, {
+        buffer = bufnr,
+        desc = 'Debug Continue',
+    })
+
+    vim.keymap.set('n', '<leader>dr', '<cmd>RustLsp run<cr>', {
+        buffer = bufnr,
+        desc = 'Run Rust',
+    })
+
+    vim.keymap.set('n', '<leader>dd', function()
+        require('dap').run {
+            name = 'Debug current crate',
+            type = 'codelldb',
+            request = 'launch',
+            program = function() return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/target/debug/', 'file') end,
+            cwd = '${workspaceFolder}',
+        }
+    end, { buffer = bufnr, desc = 'Debug' })
+
+    vim.keymap.set('n', '<leader>bl', function()
+        local dap_bps = require('dap.breakpoints').get()
+
+        local pickers = require 'telescope.pickers'
+        local finders = require 'telescope.finders'
+        local conf = require('telescope.config').values
+        local actions = require 'telescope.actions'
+        local action_state = require 'telescope.actions.state'
+
+        local results = {}
+
+        for file, bps in pairs(dap_bps) do
+            for _, bp in ipairs(bps) do
+                table.insert(results, {
+                    file = file,
+                    line = bp.line,
+                })
+            end
+        end
+
+        if vim.tbl_isempty(results) then
+            print 'No breakpoints set'
+            return
+        end
+
+        pickers
+            .new({}, {
+                prompt_title = 'Breakpoints',
+                finder = finders.new_table {
+                    results = results,
+                    entry_maker = function(entry)
+                        return {
+                            value = entry,
+                            display = string.format('%s:%d', entry.file, entry.line),
+                            ordinal = entry.file .. ':' .. entry.line,
+                        }
+                    end,
+                },
+                sorter = conf.generic_sorter {},
+
+                -- use safe previewer
+                previewer = conf.file_previewer {},
+
+                attach_mappings = function(prompt_bufnr, map)
+                    -- ENTER → jump to breakpoint
+                    actions.select_default:replace(function()
+                        local selection = action_state.get_selected_entry()
+                        if not selection or not selection.value then return end
+
+                        actions.close(prompt_bufnr)
+
+                        vim.cmd('edit ' .. selection.value.file)
+                        vim.api.nvim_win_set_cursor(0, { selection.value.line, 0 })
+                    end)
+
+                    -- dd → delete breakpoint
+                    map('n', 'dd', function()
+                        local selection = action_state.get_selected_entry()
+                        if not selection or not selection.value then return end
+
+                        actions.close(prompt_bufnr)
+
+                        vim.cmd('edit ' .. selection.value.file)
+                        vim.api.nvim_win_set_cursor(0, { selection.value.line, 0 })
+                        require('dap').toggle_breakpoint()
+                    end)
+
+                    return true
+                end,
+            })
+            :find()
+    end, { buffer = bufnr, desc = 'List Breakpoints' })
 end
 
 M.setup_whichkey = function()
