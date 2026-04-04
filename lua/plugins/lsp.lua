@@ -114,9 +114,15 @@ return {
         ---@type table<string, vim.lsp.Config>
         local servers = {
             --gopls = {},
-            clangd = {},
             pyright = {},
             stylua = {}, -- Used to format Lua code
+
+            clangd = {
+                cmd = {
+                    'clangd',
+                    '--offset-encoding=utf-16',
+                },
+            },
 
             -- Special Lua Config, as recommended by neovim help docs
             lua_ls = {
@@ -156,7 +162,7 @@ return {
         -- You can press `g?` for help in this menu.
         local ensure_installed = vim.tbl_keys(servers or {})
         vim.list_extend(ensure_installed, {
-            "codelldb",
+            'codelldb',
         })
 
         require('mason-tool-installer').setup {

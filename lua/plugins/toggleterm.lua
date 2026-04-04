@@ -20,5 +20,6 @@ return {
         -- We can define multiple terminal presets for common commands
         local Terminal = require('toggleterm.terminal').Terminal
         require('config.keymaps').setup_toggleterm(Terminal)
+        require('config.vitis').setup(Terminal)
     end,
 }

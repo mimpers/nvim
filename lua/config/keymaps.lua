@@ -50,6 +50,27 @@ vim.keymap.set('v', '<S-Tab>', '<gv', { desc = 'Indent selection left' })
 
 vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Open floating diagnostic' })
 
+-- Vitis mappings
+vim.keymap.set('n', '<leader>vm', '<cmd>Vmake<CR>', { desc = "Vitis: Build App & Platform" })
+vim.keymap.set('n', '<leader>vc', '<cmd>Vclean<CR>', { desc = "Vitis: Clean App & Platform" })
+vim.keymap.set('n', '<leader>vi', '<cmd>Vinit<CR>', { desc = "Vitis: Initialize SmartLynq" })
+vim.keymap.set('n', '<leader>vx', function()
+    local path = vim.fn.input("Path to XSA: ", "", "file")
+    if path ~= "" then
+        vim.cmd("Vxsa " .. path)
+    end
+end, { desc = "Vitis: Use new Xsa (Prompt)" })
+
+vim.keymap.set('n', '<F5>', function() require('dap').continue() end, { desc = "Debug: Start/Continue" })
+vim.keymap.set('n', '<F10>', function() require('dap').step_over() end, { desc = "Debug: Step Over" })
+vim.keymap.set('n', '<F11>', function() require('dap').step_into() end, { desc = "Debug: Step Into" })
+vim.keymap.set('n', '<leader>db', function() require('dap').toggle_breakpoint() end, { desc = "Debug: Toggle Breakpoint" })
+vim.keymap.set('n', '<leader>dl', function()
+    require('dap').list_breakpoints()
+    vim.cmd("copen") -- Automatically open the quickfix window
+end, { desc = "Debug: List Breakpoints" })
+vim.keymap.set('n', '<leader>du', function() require('dapui').toggle() end, { desc = "Debug: Toggle UI" })
+
 -- [[ Plugin Keymaps ]]
 --     add to plugin file: require('config.keymaps').setup_()
 
@@ -417,6 +438,7 @@ M.setup_whichkey = function()
         { '<leader>t', group = '[T]oggle' },
         { '<leader>h', group = 'Git [H]unk/[H]arpoon', mode = { 'n', 'v' } }, -- Enable gitsigns recommended keymaps first
         { '<leader>c', group = '[C]argo', mode = { 'n' } },
+        { '<leader>v', group = '[V]itis', mode = { 'n' } },
         { 'g', group = '[G]oto' },
         { 'gr', group = '[G]oto [R]eferences/LSP', mode = { 'n' } },
         { 'n', group = '[N]eoGit', mode = { 'n' } },

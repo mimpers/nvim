@@ -1,0 +1,27 @@
+---
+Language: Cpp
+BasedOnStyle: Microsoft
+IndentWidth: 4
+ColumnLimit: 100
+
+AlignConsecutiveDeclarations:
+  Enabled: true
+  AcrossEmptyLines: false
+  AcrossComments: false
+
+AlignConsecutiveAssignments:
+  Enabled: true
+
+PointerAlignment: Middle
+MaxEmptyLinesToKeep: 1
+KeepEmptyLinesAtTheStartOfBlocks: false
+AllowShortFunctionsOnASingleLine: Inline
+AllowShortIfStatementsOnASingleLine: Never
+BinPackArguments: true
+BinPackParameters: true
+BreakBeforeBraces: Allman
+NamespaceIndentation: None
+
+# Includes
+SortIncludes: true
+IncludeBlocks: Regroup
